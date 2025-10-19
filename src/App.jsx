@@ -92,7 +92,7 @@ const RadarLoading = () => (
         left: '50%',
         width: '70px',
         height: '2px',
-        background: 'linear-gradient(90deg, transparent, #667eea)',
+        background: 'linear-gradient(90deg, transparent,rgb(102, 214, 234))',
         transformOrigin: 'left center',
         animation: 'radarSweep 2s linear infinite',
         filter: 'drop-shadow(0 0 8px #667eea)'
@@ -324,10 +324,10 @@ const MobileBottomSheet = ({
 // ---------- Custom Icon Generator ----------
 const createCustomIcon = (dayIndex, activityType = '') => {
   const colors = [
-    'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-    'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)',
-    'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)',
-    'linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)',
+    'linear-gradient(135deg, rgb(45, 128, 211) 0%, rgb(45, 128, 211) 100%)',
+    'linear-gradient(135deg, rgb(45, 128, 211) 0%, #f5576c 100%)',
+    'linear-gradient(135deg, rgb(45, 128, 211) 0%, rgb(45, 128, 211) 100%)',
+    'linear-gradient(135deg, #43e97b 0%, rgb(45, 128, 211) 100%)',
     'linear-gradient(135deg, #fa709a 0%, #fee140 100%)',
     'linear-gradient(135deg, #a8edea 0%, #fed6e3 100%)'
   ];
@@ -375,112 +375,152 @@ const createCustomIcon = (dayIndex, activityType = '') => {
 };
 
 // ---------- Enhanced Popup Component ----------
-const EnhancedPopup = ({ marker, onGetDirections }) => (
-  <div style={{
-    minWidth: '280px',
-    borderRadius: '16px',
-    overflow: 'hidden',
-    background: 'white',
-    boxShadow: '0 15px 30px rgba(0,0,0,0.15)'
-  }}>
+const EnhancedPopup = ({ marker, onGetDirections }) => {
+  const [imageError, setImageError] = useState(false);
+
+  return (
     <div style={{
-      background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-      padding: '16px',
-      color: 'white',
-      position: 'relative'
+      minWidth: '280px',
+      borderRadius: '16px',
+      overflow: 'hidden',
+      background: 'white',
+      boxShadow: '0 15px 30px rgba(0,0,0,0.15)'
     }}>
-      <div style={{
-        position: 'absolute',
-        top: 0,
-        right: 0,
-        width: '50px',
-        height: '50px',
-        background: 'rgba(255,255,255,0.1)',
-        borderRadius: '0 0 0 100%'
-      }}></div>
-      <h4 style={{ 
-        margin: '0 0 6px 0', 
-        fontSize: '16px', 
-        fontWeight: '700',
-        lineHeight: '1.3'
-      }}>
-        {marker.activity || 'Activity'}
-      </h4>
-      <div style={{ 
-        display: 'flex', 
-        alignItems: 'center', 
-        gap: '6px',
-        fontSize: '13px',
-        opacity: 0.9,
-        flexWrap: 'wrap'
-      }}>
-        <span>📅 {marker.day}</span>
-        <span>•</span>
-        <span>🕒 {marker.time}</span>
-      </div>
-    </div>
-    
-    <div style={{ padding: '16px' }}>
-      <div style={{
-        display: 'flex',
-        alignItems: 'center',
-        gap: '8px',
-        marginBottom: '10px',
-        fontWeight: '600',
-        color: '#2d3436',
-        fontSize: '14px'
-      }}>
-        <span style={{ fontSize: '16px' }}>📍</span>
-        {marker.location}
-      </div>
-      
-      {marker.notes && (
+      {/* Image Section */}
+      {marker.image_url && !imageError && (
         <div style={{
-          padding: '10px',
-          background: 'linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%)',
-          borderRadius: '8px',
-          marginBottom: '12px',
-          fontSize: '13px',
-          color: '#636e72',
-          lineHeight: 1.4
+          height: '120px',
+          overflow: 'hidden'
         }}>
-          {marker.notes}
+          <img 
+            src={marker.image_url} 
+            alt={marker.activity}
+            style={{
+              width: '100%',
+              height: '100%',
+              objectFit: 'cover'
+            }}
+            onError={() => setImageError(true)}
+            onLoad={() => setImageError(false)}
+          />
         </div>
       )}
       
-      <button 
-        onClick={() => onGetDirections(marker)}
-        style={{
-          width: '100%',
-          padding: '12px 16px',
-          borderRadius: '10px',
-          background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-          color: 'white',
-          border: 'none',
-          cursor: 'pointer',
-          fontSize: '14px',
+      <div style={{
+        background: 'linear-gradient(135deg, #667eea 0%, rgb(45, 128, 211) 100%)',
+        padding: '16px',
+        color: 'white',
+        position: 'relative'
+      }}>
+        <div style={{
+          position: 'absolute',
+          top: 0,
+          right: 0,
+          width: '50px',
+          height: '50px',
+          background: 'rgba(255,255,255,0.1)',
+          borderRadius: '0 0 0 100%'
+        }}></div>
+        <h4 style={{ 
+          margin: '0 0 6px 0', 
+          fontSize: '16px', 
+          fontWeight: '700',
+          lineHeight: '1.3'
+        }}>
+          {marker.activity || 'Activity'}
+        </h4>
+        <div style={{ 
+          display: 'flex', 
+          alignItems: 'center', 
+          gap: '6px',
+          fontSize: '13px',
+          opacity: 0.9,
+          flexWrap: 'wrap'
+        }}>
+          <span>📅 {marker.day}</span>
+          <span>•</span>
+          <span>📍 {marker.location}</span>
+        </div>
+      </div>
+      
+      <div style={{ padding: '16px' }}>
+        <div style={{
+          marginBottom: '10px',
           fontWeight: '600',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          gap: '8px',
-          transition: 'all 0.3s ease'
-        }}
-        onMouseEnter={(e) => {
-          e.target.style.transform = 'translateY(-2px)';
-          e.target.style.boxShadow = '0 6px 15px rgba(102, 126, 234, 0.4)';
-        }}
-        onMouseLeave={(e) => {
-          e.target.style.transform = 'translateY(0)';
-          e.target.style.boxShadow = 'none';
-        }}
-      >
-        <span style={{ fontSize: '16px' }}>🗺️</span>
-        Get Directions
-      </button>
+          color: '#2d3436',
+          fontSize: '14px'
+        }}>
+          <span style={{ fontSize: '16px' }}>📝</span> Description
+        </div>
+        
+        {marker.description && (
+          <div style={{
+            padding: '10px',
+            background: 'linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%)',
+            borderRadius: '8px',
+            marginBottom: '12px',
+            fontSize: '13px',
+            color: '#636e72',
+            lineHeight: 1.4
+          }}>
+            {marker.description}
+          </div>
+        )}
+        
+        {marker.source_url && (
+          <div style={{
+            marginBottom: '12px',
+            fontSize: '12px',
+            opacity: 0.7
+          }}>
+            <a 
+              href={marker.source_url} 
+              target="_blank" 
+              rel="noopener noreferrer"
+              style={{
+                color: '#667eea',
+                textDecoration: 'none'
+              }}
+            >
+              🔗 More information
+            </a>
+          </div>
+        )}
+        
+        <button 
+          onClick={() => onGetDirections(marker)}
+          style={{
+            width: '100%',
+            padding: '12px 16px',
+            borderRadius: '10px',
+            background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+            color: 'white',
+            border: 'none',
+            cursor: 'pointer',
+            fontSize: '14px',
+            fontWeight: '600',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: '8px',
+            transition: 'all 0.3s ease'
+          }}
+          onMouseEnter={(e) => {
+            e.target.style.transform = 'translateY(-2px)';
+            e.target.style.boxShadow = '0 6px 15px rgba(102, 126, 234, 0.4)';
+          }}
+          onMouseLeave={(e) => {
+            e.target.style.transform = 'translateY(0)';
+            e.target.style.boxShadow = 'none';
+          }}
+        >
+          <span style={{ fontSize: '16px' }}>🗺️</span>
+          Get Directions
+        </button>
+      </div>
     </div>
-  </div>
-);
+  );
+};
 
 // ---------- Day Selection Tabs ----------
 const DayTabs = ({ days, selectedDay, onDaySelect }) => {
@@ -525,6 +565,8 @@ const DayTabs = ({ days, selectedDay, onDaySelect }) => {
 
 // ---------- Activity Card ----------
 const ActivityCard = ({ activity, markerIndex, onFocusMarker, isSelected, isMobile }) => {
+  const [imageError, setImageError] = useState(false);
+  
   const getActivityIcon = (type) => {
     if (!type) return '📍';
     const t = type.toLowerCase();
@@ -573,6 +615,7 @@ const ActivityCard = ({ activity, markerIndex, onFocusMarker, isSelected, isMobi
         alignItems: 'flex-start', 
         gap: isMobile ? '12px' : '14px' 
       }}>
+        {/* Activity Icon */}
         <div style={{
           background: isSelected 
             ? 'rgba(255,255,255,0.2)' 
@@ -587,6 +630,7 @@ const ActivityCard = ({ activity, markerIndex, onFocusMarker, isSelected, isMobi
           {getActivityIcon(activity.activity)}
         </div>
         
+        {/* Activity Content */}
         <div style={{ flex: 1 }}>
           <div style={{
             display: 'flex',
@@ -602,21 +646,8 @@ const ActivityCard = ({ activity, markerIndex, onFocusMarker, isSelected, isMobi
               color: isSelected ? 'white' : '#2d3436',
               lineHeight: '1.3'
             }}>
-              {activity.activity}
+              {activity.name || activity.activity}
             </h4>
-            <span style={{
-              background: isSelected 
-                ? 'rgba(255,255,255,0.2)' 
-                : 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-              color: 'white',
-              padding: '4px 10px',
-              borderRadius: '16px',
-              fontSize: '12px',
-              fontWeight: '600',
-              whiteSpace: 'nowrap'
-            }}>
-              {activity.time}
-            </span>
           </div>
           
           <div style={{
@@ -625,18 +656,41 @@ const ActivityCard = ({ activity, markerIndex, onFocusMarker, isSelected, isMobi
             opacity: isSelected ? 0.9 : 0.8,
             fontWeight: '500'
           }}>
-            📍 {activity.location}
+            📍 {activity.location || activity.name}
           </div>
           
-          {activity.notes && (
+          {/* Activity Image */}
+          {activity.image_url && !imageError && (
+            <div style={{
+              marginTop: '8px',
+              borderRadius: '8px',
+              overflow: 'hidden',
+              height: '80px',
+              width: '100%'
+            }}>
+              <img 
+                src={activity.image_url} 
+                alt={activity.name || activity.activity}
+                style={{
+                  width: '100%',
+                  height: '100%',
+                  objectFit: 'cover'
+                }}
+                onError={() => setImageError(true)}
+                onLoad={() => setImageError(false)}
+              />
+            </div>
+          )}
+          
+          {activity.description && (
             <div style={{
               fontSize: '12px',
               opacity: isSelected ? 0.8 : 0.7,
               lineHeight: 1.4,
-              fontStyle: 'italic',
-              marginTop: '6px'
+              marginTop: '6px',
+              fontStyle: 'italic'
             }}>
-              {activity.notes}
+              {activity.description}
             </div>
           )}
         </div>
@@ -669,7 +723,7 @@ const MobileHeader = ({ onToggleMenu, hasData }) => (
       <div style={{
         width: '36px',
         height: '36px',
-        background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+        background: 'linear-gradient(135deg, #00f2fe 0%, #00f2fe 100%)',
         borderRadius: '10px',
         display: 'flex',
         alignItems: 'center',
@@ -758,6 +812,37 @@ function App() {
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
 
+  // Transform new API response to old format
+  const transformApiResponse = (data) => {
+    if (!data) return [];
+    
+    // If data is already in the old format, return as is
+    if (Array.isArray(data) && data[0]?.days) {
+      return data;
+    }
+    
+    // Transform new format to old format
+    const days = Object.keys(data).map(dayKey => {
+      const activities = data[dayKey];
+      return {
+        day: dayKey,
+        rows: activities.map(activity => ({
+          activity: activity.name,
+          name: activity.name,
+          location: activity.name,
+          latitude: activity.latitude,
+          longitude: activity.longitude,
+          image_url: activity.image_url,
+          description: activity.description,
+          source_url: activity.source_url,
+          time: '' // Not provided in new API
+        }))
+      };
+    });
+    
+    return [{ days }];
+  };
+
   // Fetch existing data
   useEffect(() => {
     const loadPlansAndCoords = async () => {
@@ -767,17 +852,20 @@ function App() {
         try {
           res = await api.get('/api/geminidata');
         } catch (e) {
-          res = await api.get('/api/sami-park-osm');
+          console.log('Primary API failed, trying fallback...');
+          return;
         }
 
-        let plans = res?.data ?? [];
+        const plans = res?.data ?? [];
         if (!Array.isArray(plans)) {
-          if (plans && typeof plans === 'object' && (plans.days || plans.data)) {
-            plans = [plans];
+          if (plans && typeof plans === 'object') {
+            // Transform new API response format
+            const transformedData = transformApiResponse(plans);
+            setGeminiData(transformedData);
           } else {
             setGeminiData([]);
-            return;
           }
+          return;
         }
 
         if (plans.length === 0) {
@@ -786,30 +874,15 @@ function App() {
         }
 
         setGeminiData(plans);
-        const codeFromPlan = plans[0]?.code_chat ?? plans[0]?.code ?? null;
-        const codeToUse = codeFromPlan ?? 'EXAMPLE_CODE';
-        const locations = await fetchLocationsForCode(codeToUse);
         
       } catch (err) {
         console.error('loadPlansAndCoords error', err);
-        setError('Failed to load plans or locations.');
+        setError('Failed to load plans.');
       }
     };
 
     loadPlansAndCoords();
   }, []);
-
-  const fetchLocationsForCode = async (code) => {
-    if (!code) return null;
-    try {
-      const res = await api.get(`/api/get-location/${encodeURIComponent(code)}`);
-      if (!res?.data?.locations) return null;
-      return res.data.locations;
-    } catch (err) {
-      console.error('fetchLocationsForCode failed', err);
-      return null;
-    }
-  };
 
   const startPolling = (code) => {
     setLoading(true);
@@ -819,34 +892,15 @@ function App() {
       try {
         const res = await api.get(`/api/geminidata/${encodeURIComponent(code)}`);
         const payload = res.data?.data ?? res.data;
-        if (payload && (payload.days || (payload.data && payload.data.days))) {
+        
+        if (payload && (Object.keys(payload).length > 0 || payload.days)) {
           clearInterval(pollingInterval.current);
           pollingInterval.current = null;
           setLoading(false);
           
-          const planObj = res.data || payload;
-          const locations = await fetchLocationsForCode(code);
-          const lookup = {};
-          (locations || []).forEach(l => {
-            lookup[(l.location || '').trim().toLowerCase()] = { lat: l.latitude, lon: l.longitude, found: !!l.found };
-          });
-
-          const copy = JSON.parse(JSON.stringify(planObj));
-          const days = copy.data?.days ?? copy.days ?? [];
-          days.forEach(day => {
-            (day.rows || []).forEach(row => {
-              const key = (row.location || '').trim().toLowerCase();
-              if (lookup[key]) {
-                row.latitude = lookup[key].lat;
-                row.longitude = lookup[key].lon;
-              } else {
-                row.latitude = row.latitude ?? row.lat ?? null;
-                row.longitude = row.longitude ?? row.lon ?? null;
-              }
-            });
-          });
-          if (copy.data && copy.data.days) copy.data.days = days; else copy.days = days;
-          setGeminiData([copy]);
+          // Transform the response to the expected format
+          const transformedData = transformApiResponse(payload);
+          setGeminiData(transformedData);
           setError('');
         }
       } catch (err) {
@@ -910,10 +964,13 @@ function App() {
           list.push({
             latitude: lat,
             longitude: lng,
-            activity: row.activity ?? row.title ?? '',
+            activity: row.activity ?? row.name ?? row.title ?? '',
+            name: row.name ?? row.activity ?? '',
+            location: row.location ?? row.name ?? '',
+            description: row.description ?? row.notes ?? '',
+            image_url: row.image_url,
+            source_url: row.source_url,
             time: row.time ?? '',
-            location: row.location ?? '',
-            notes: row.notes ?? '',
             day: day.day ?? `Day ${dayIndex + 1}`,
             dayIndex,
             planIndex,
@@ -977,7 +1034,7 @@ function App() {
           margin: '0 0 8px 0',
           fontSize: '28px',
           fontWeight: '800',
-          background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+          background: 'linear-gradient(135deg, #00f2fe 0%, #00f2fe 100%)',
           WebkitBackgroundClip: 'text',
           WebkitTextFillColor: 'transparent',
           backgroundClip: 'text'
@@ -1165,7 +1222,7 @@ function App() {
                   padding: '16px 12px',
                   borderRadius: '12px',
                   background: duration === dayCount 
-                    ? 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' 
+                    ? 'linear-gradient(135deg, rgb(45, 128, 211) 0%, rgb(45, 128, 211) 100%)' 
                     : 'rgba(255,255,255,0.1)',
                   border: duration === dayCount 
                     ? '2px solid rgba(255,255,255,0.3)' 
@@ -1249,7 +1306,7 @@ function App() {
               padding: '14px 20px',
               borderRadius: '12px',
               border: 'none',
-              background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+              background: 'linear-gradient(135deg,rgb(45, 128, 211) 0%, rgb(45, 128, 211) 100%)',
               color: 'white',
               fontSize: '1em',
               fontWeight: '600',
@@ -1258,7 +1315,7 @@ function App() {
             }}
             onMouseEnter={(e) => {
               e.target.style.transform = 'translateY(-2px)';
-              e.target.style.boxShadow = '0 8px 20px rgba(102, 126, 234, 0.4)';
+              e.target.style.boxShadow = '0 8px 20px #00f2fe';
             }}
             onMouseLeave={(e) => {
               e.target.style.transform = 'translateY(0)';
@@ -1297,7 +1354,7 @@ function App() {
               width: '20px',
               height: '20px',
               border: '2px solid transparent',
-              borderTop: '2px solid #667eea',
+              borderTop: '2px solid rgb(45, 128, 211)',
               borderRadius: '50%',
               animation: 'spin 1s linear infinite'
             }}></div>
@@ -1330,7 +1387,7 @@ function App() {
             const markerIndex = markers.findIndex(m => 
               m.latitude === lat && 
               m.longitude === lng && 
-              m.activity === (activity.activity ?? '')
+              m.activity === (activity.activity ?? activity.name ?? '')
             );
             const isSelected = selectedMarker && 
               selectedMarker.latitude === lat && 
@@ -1684,7 +1741,7 @@ function App() {
               {selectedMarker.activity}
             </h4>
             <p style={{ margin: '0 0 12px 0', color: '#636e72', fontSize: '0.9em' }}>
-              {selectedMarker.day} • {selectedMarker.time}
+              {selectedMarker.day} • {selectedMarker.location}
             </p>
             <button
               onClick={() => handleGetDirections(selectedMarker)}
@@ -1727,7 +1784,7 @@ function App() {
               const markerIndex = markers.findIndex(m => 
                 m.latitude === lat && 
                 m.longitude === lng && 
-                m.activity === (activity.activity ?? '')
+                m.activity === (activity.activity ?? activity.name ?? '')
               );
               const isSelected = selectedMarker && 
                 selectedMarker.latitude === lat && 
@@ -1780,17 +1837,17 @@ function App() {
         }
         
         ::-webkit-scrollbar-track {
-          background: rgba(255,255,255,0.1);
+          background: #00f2fe;
           border-radius: 3px;
         }
         
         ::-webkit-scrollbar-thumb {
-          background: rgba(102, 126, 234, 0.6);
+          background: #00f2fe;
           border-radius: 3px;
         }
         
         ::-webkit-scrollbar-thumb:hover {
-          background: rgba(102, 126, 234, 0.8);
+          background: #00f2fe;
         }
       `}</style>
     </div>
